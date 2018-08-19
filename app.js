@@ -176,5 +176,3 @@ function preStart() {
         } 
     }
 }
-
-setInterval(preStart, 8);
