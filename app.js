@@ -1,18 +1,17 @@
-// Canvas Variables
+// Canvas Variables:
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 
 // Mechanics Variables:
 
-
-// Ball Variables
+// Ball Variables:
 let x = canvas.width/2;
 let y = canvas.height-45;
 let dx = 2;
 let dy = -2;
 let ballRadius = 10;
 
-// Paddle Variables
+// Paddle Variables:
 let paddleHeight = 10;
 let paddleWidth = 100;
 let paddleX = (canvas.width-paddleWidth)/2;
@@ -20,7 +19,7 @@ let paddleY = canvas.height-20;
 let rightPressed = false;
 let leftPressed = false;
 
-// Brick Variables
+// Brick Variables:
 let brickRowCount = 3;
 let brickColumnCount = 5;
 let brickWidth = 75;
@@ -29,7 +28,7 @@ let brickPadding = 10;
 let brickOffsetTop = 30;
 let brickOffsetLeft = 30;
 
-// Brick Creation Loop
+// Brick Creation Loop:
 let bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
     bricks[c] = [];
@@ -38,6 +37,44 @@ for (let c = 0; c < brickColumnCount; c++) {
     }
 }
 
+init();
+
+function init() {
+    drawBall();
+    drawPaddle();
+}
+
+// arrow and spacebar listeners
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+document.addEventListener("keypress", spaceStart, false);
+
+// spacebar starts the game
+function spaceStart(e) {
+    if(e.keyCode == 32){
+    setInterval(draw, 8);
+    }
+}
+
+// arrow keyDown paddle movement
+function keyDownHandler(e) {
+    if (e.keyCode == 39) {
+        rightPressed = true;
+    } else if (e.keyCode == 37) {
+        leftPressed = true;
+    }
+}
+
+// arrow keyUp logic
+function keyUpHandler(e) {
+    if (e.keyCode == 39) {
+        rightPressed = false;
+    } else if (e.keyCode == 37) {
+        leftPressed = false;
+    }
+}
+
+// draw the bricks
 function drawBricks() {
     for ( let c = 0; c < brickColumnCount; c++) {
         for (let r = 0; r < brickRowCount; r++) {
@@ -52,7 +89,7 @@ function drawBricks() {
     }
 }
 
-// This tells the draw() function how to draw the ball
+// draw the ball
 function drawBall() {
     ctx.beginPath();
     ctx.arc(x, y, ballRadius, 0, Math.PI*2);
@@ -60,7 +97,7 @@ function drawBall() {
     ctx.closePath();
 }
 
-// This tells the draw() function how to draw the paddle
+// draw the paddle
 function drawPaddle() {
     ctx.beginPath();
     ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
@@ -68,12 +105,8 @@ function drawPaddle() {
     ctx.closePath();
 }
 
-// Drawing the canvas, ball and paddle
-function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBall();
-    drawPaddle();        
-
+// ball behavior once game starts
+function ballBehavior() {
     if (y + dy < ballRadius) {
         dy = -dy;
     } else if (y + dy > canvas.height - ballRadius) {
@@ -87,12 +120,15 @@ function draw() {
     }
 
     if (x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
-         dx = -dx;
+        dx = -dx;
     }
-    
-    x += dx;
-    y += dy;
+   
+   x += dx;
+   y += dy;
+}
 
+// paddle behavior for pre-start and live game
+function paddleBehavior() {
     if (rightPressed && paddleX < canvas.width-paddleWidth) {
         paddleX += 8;
     } else if (leftPressed && paddleX > 0) {
@@ -100,79 +136,22 @@ function draw() {
     }
 }
 
-// This is for when the arrow key is pressed
-document.addEventListener("keydown", keyDownHandler, false);
-function keyDownHandler(e) {
-    if (e.keyCode == 39) {
-        rightPressed = true;
-    } else if (e.keyCode == 37) {
-        leftPressed = true;
-    }
-}
-
-// This is for when the arrow key is no longer being pressed
-document.addEventListener("keyup", keyUpHandler, false);
-function keyUpHandler(e) {
-    if (e.keyCode == 39) {
-        rightPressed = false;
-    } else if (e.keyCode == 37) {
-        leftPressed = false;
-    }
-}
-
-// This function lets the spacebar key start the game
-document.addEventListener("keyup", spaceStart, false);
-function spaceStart(e) {
-    if(e.keyCode == 32){
-        setInterval(draw, 8);
-    }
-}
-
-// This function is the "pre-start" function, where you can position the ball and paddle before you begin
-function preStart() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBall();
-    drawPaddle();
-
-    // This function defines the arrow keys functionality when pressed
-    document.addEventListener("keydown", keyDownHandler, false);
-    function keyDownHandler(e) {
-        if (e.keyCode == 39) {
-            rightPressed = true;
-        } else if (e.keyCode == 37) {
-            leftPressed = true;
-        }
-    }
-
-    // This function defines the arrow keys functionality when no longer pressed
-    document.addEventListener("keyup", keyUpHandler, false);
-    function keyUpHandler(e) {
-        if (e.keyCode == 39) {
-            rightPressed = false;
-        } else if (e.keyCode == 37) {
-            leftPressed = false;
-        }
-    }
-    
-    // This if statement allows the paddle to move before the game begins
-    if (rightPressed && paddleX < canvas.width-paddleWidth) {
-        paddleX += 2;
-    } else if (leftPressed && paddleX > 0) {
-        paddleX -= 2;
-    }
-
+// pre-start ball behavior
+function preStartBall() {
     // This if statement allows the ball to move with the paddle before the game begins
     if (rightPressed && ballRadius < paddleWidth) {
         x += dx;
     } else if (leftPressed && ballRadius < paddleWidth) {
         x -= dx;
-    }    
-    
-    // This function lets the spacebar key start the game
-    document.addEventListener("keyup", spaceStart, false);
-    function spaceStart(e) {
-        if(e.keyCode == 32){
-            clearInterval(preStart);
-        } 
     }
 }
+
+// 
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBall();
+    drawPaddle();   
+    ballBehavior();     
+    paddleBehavior();   
+}
+
