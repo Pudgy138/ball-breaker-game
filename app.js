@@ -2,13 +2,11 @@
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 
-// Mechanics Variables:
-
 // Ball Variables:
 let x = canvas.width/2;
 let y = canvas.height-45;
-let dx = 2;
-let dy = -2;
+let dx = 1;
+let dy = -1;
 let ballRadius = 10;
 
 // Paddle Variables:
@@ -37,14 +35,20 @@ for (let c = 0; c < brickColumnCount; c++) {
     }
 }
 
+const preStartInterval = setInterval(init, 8);
+
 init();
 
 function init() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
     drawPaddle();
+    paddleBehavior();
+    preStartBall();
 }
 
 // arrow and spacebar listeners
+
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("keypress", spaceStart, false);
@@ -52,20 +56,25 @@ document.addEventListener("keypress", spaceStart, false);
 // spacebar starts the game
 function spaceStart(e) {
     if(e.keyCode == 32){
+    clearInterval(preStartInterval);
     setInterval(draw, 8);
+    console.log("live game started");
     }
 }
 
-// arrow keyDown paddle movement
+// ball speed increment/decrement
+// I would like to increment and decrement the ball speed with the up and down arrows.
+
+// arrow keyDown for paddle movement
 function keyDownHandler(e) {
     if (e.keyCode == 39) {
         rightPressed = true;
     } else if (e.keyCode == 37) {
         leftPressed = true;
-    }
+    } 
 }
 
-// arrow keyUp logic
+// arrow keyUp logic for paddle
 function keyUpHandler(e) {
     if (e.keyCode == 39) {
         rightPressed = false;
@@ -106,13 +115,13 @@ function drawPaddle() {
 }
 
 // ball behavior once game starts
-function ballBehavior() {
+function liveBallBehavior() {
     if (y + dy < ballRadius) {
         dy = -dy;
     } else if (y + dy > canvas.height - ballRadius) {
         if (x > paddleX - ballRadius && x < paddleX + paddleWidth) {
             dy = -dy;
-            ctx.fillStyle = randomColor({luminosity: 'light'});
+            ctx.fillStyle = randomColor({luminosity: 'dark'});
         } else {
             // alert("GAME OVER");
             document.location.reload();
@@ -129,20 +138,20 @@ function ballBehavior() {
 
 // paddle behavior for pre-start and live game
 function paddleBehavior() {
-    if (rightPressed && paddleX < canvas.width-paddleWidth) {
-        paddleX += 8;
-    } else if (leftPressed && paddleX > 0) {
-        paddleX -= 8;
-    }
+        if (rightPressed && paddleX < canvas.width-paddleWidth) {
+            paddleX += 6;
+        } else if (leftPressed && paddleX > 0) {
+            paddleX -= 6;
+        }
 }
 
 // pre-start ball behavior
 function preStartBall() {
     // This if statement allows the ball to move with the paddle before the game begins
     if (rightPressed && ballRadius < paddleWidth) {
-        x += dx;
+        x += 6;
     } else if (leftPressed && ballRadius < paddleWidth) {
-        x -= dx;
+        x -= 6;
     }
 }
 
@@ -151,7 +160,7 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
     drawPaddle();   
-    ballBehavior();     
+    liveBallBehavior();     
     paddleBehavior();   
 }
 
