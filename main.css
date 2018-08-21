@@ -4,6 +4,6 @@
 #myCanvas { 
     background: #eee; 
     display: block; 
-    margin: 75px 125px 115px;
+    margin: 0 auto;
     border: 1px solid #4e4e4eb0;
 }
