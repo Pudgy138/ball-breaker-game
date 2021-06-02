@@ -4,8 +4,8 @@ const ctx = canvas.getContext("2d");
 
 // Ball Variables:
 // Ball starting placement
-let x = canvas.width/2;
-let y = canvas.height-45;
+let x = canvas.width / 2;
+let y = canvas.height - 45;
 
 // Ball movement speed
 let dx = 2;
@@ -20,8 +20,8 @@ let paddleHeight = 10;
 let paddleWidth = 120;
 
 // Paddle starting placement
-let paddleX = (canvas.width-paddleWidth)/2;
-let paddleY = canvas.height-20;
+let paddleX = (canvas.width - paddleWidth) / 2;
+let paddleY = canvas.height - 20;
 
 // Paddle movement
 let rightPressed = false;
@@ -65,8 +65,8 @@ function drawBricks() {
     for (let c = 0; c < brickColumnCount; c++) {
         for (let r = 0; r < brickRowCount; r++) {
             if (bricks[c][r].status == 1) {
-            let brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
-            let brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+            let brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
+            let brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
             bricks[c][r].x = brickX;
             bricks[c][r].y = brickY;
             ctx.beginPath();
@@ -116,7 +116,7 @@ function collisionDetection() {
                     b.status = 0;
                     playerScore++;
                     score.textContent = playerScore;
-                    if (playerScore == brickRowCount*brickColumnCount) {
+                    if (playerScore == brickRowCount * brickColumnCount) {
                         alert("You Win! Congratulations!!");
                         document.location.reload();
                     }
@@ -147,7 +147,7 @@ function keyUpHandler(e) {
 // Draw the ball
 function drawBall() {
     ctx.beginPath();
-    ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+    ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
     ctx.fill();
     ctx.closePath();
 }
@@ -175,16 +175,16 @@ function liveBallBehavior() {
                 alert("Game Over! Sorry!");
                 document.location.reload();
             } else {
-                x = canvas.width/2;
-                y = canvas.height-30;
+                x = canvas.width / 2;
+                y = canvas.height - 30;
                 dx = 2;
                 dy = -2;
-                paddleX = (canvas.width-paddleWidth)/2;
+                paddleX = (canvas.width - paddleWidth) / 2;
             }
         }
     }
 
-    if (x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
         dx = -dx;
     }
    
